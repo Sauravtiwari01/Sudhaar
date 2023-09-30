@@ -52,10 +52,17 @@ dependencies:
   camera: ^0.9.4+11
   location: ^5.0.0
   geocoding: ^2.1.0
+  flutter_native_splash: ^2.3.2
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+flutter_native_splash:
+  color: "#004225"
+  image: assets/images/splash.png
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
