@@ -12,12 +12,8 @@ import 'screens/main_screens/homepage.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  FlutterNativeSplash.removeAfter(initialization);
   runApp(const MyApp());
 }
- Future initialization(BuildContext? context) async{
-  await Future.delayed(Duration(seconds: 3));
- }
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
