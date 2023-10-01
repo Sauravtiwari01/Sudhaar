@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:image_picker/image_picker.dart';
 import '../camera.dart';
 import '../date_time_picker.dart';
 
@@ -22,8 +25,8 @@ class _PoliceFormState extends State<PoliceForm> {
   TimeOfDay? _selectedTime;
   _getCurrentLocation() {
     Geolocator.getCurrentPosition(
-            desiredAccuracy: LocationAccuracy.best,
-            forceAndroidLocationManager: true)
+        desiredAccuracy: LocationAccuracy.best,
+        forceAndroidLocationManager: true)
         .then((Position position) {
       setState(() {
         _currentPosition = position;
@@ -31,6 +34,66 @@ class _PoliceFormState extends State<PoliceForm> {
     }).catchError((e) {
       print(e);
     });
+  }
+  File? _selectedImage;
+  TextEditingController _evidenceController = TextEditingController();
+
+  // Function to open the bottom sheet for image selection
+  void _openImagePicker(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ListTile(
+                leading: Icon(Icons.camera),
+                title: Text('Take a Picture'),
+                onTap: () {
+                  _pickImage(ImageSource.camera);
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.image),
+                title: Text('Pick from Gallery'),
+                onTap: () {
+                  _pickImage(ImageSource.gallery);
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    final picker = ImagePicker();
+    final pickedImage = await picker.pickImage(source: source);
+
+    if (pickedImage != null) {
+      setState(() {
+        _selectedImage = File(pickedImage.path);
+        _evidenceController.text = pickedImage.name;
+      });
+    }
+  }
+
+  // Function to remove the selected image
+  void _removeImage() {
+    setState(() {
+      _selectedImage = null;
+      _evidenceController.clear();
+    });
+  }
+
+  @override
+  void dispose() {
+    _evidenceController.dispose();
+    super.dispose();
   }
 
   @override
@@ -156,7 +219,7 @@ class _PoliceFormState extends State<PoliceForm> {
                   Text(
                     "LAT: ${_currentPosition?.latitude} \nLNG: ${_currentPosition?.longitude}",
                     style:
-                        GoogleFonts.kanit(textStyle: const TextStyle(fontSize: 15)),
+                    GoogleFonts.kanit(textStyle: const TextStyle(fontSize: 15)),
                   ),
                 IconButton(
                     iconSize: 35,
@@ -183,16 +246,40 @@ class _PoliceFormState extends State<PoliceForm> {
               ],
             ),
             TextFormField(
+              controller: _evidenceController,
+              readOnly: true, // Make the field non-editable
               decoration: InputDecoration(
-                labelText: 'Any witnesses or evidence',
-                suffixIcon: IconButton(
-                  icon: Icon(Icons.camera_alt,color: HexColor('#004225')), // You can change this to the icon you want
-                  onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>const Camera()));
-                  },
+                labelText: 'Evidence',
+                suffixIcon: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (_selectedImage != null) ...[
+                      IconButton(
+                        icon: Icon(Icons.close),
+                        onPressed: _removeImage, // Remove the selected image
+                      ),
+                      SizedBox(width: 10),
+                    ],
+                    IconButton(
+                      icon: Icon(Icons.camera_alt_outlined),
+                      onPressed: () {
+                        _openImagePicker(context); // Open the bottom sheet for image selection
+                      },
+                    ),
+                  ],
                 ),
               ),
             ),
+
+            // Display selected image
+            if (_selectedImage != null) ...[
+              SizedBox(height: 20),
+              Image.file(
+                _selectedImage!,
+                width: 200,
+                height: 200,
+              ),
+            ],
 
             const SizedBox(height: 20),
             const Text(
@@ -225,10 +312,10 @@ class _PoliceFormState extends State<PoliceForm> {
                   'SUBMIT',
                   style: GoogleFonts.kanit(
                       textStyle: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 30,
-                    color: HexColor('#004225'),
-                  )),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30,
+                        color: HexColor('#004225'),
+                      )),
                 ),
               ),
             ),

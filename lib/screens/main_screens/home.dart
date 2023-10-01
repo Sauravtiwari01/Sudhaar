@@ -43,16 +43,6 @@ class _HomeState extends State<Home> {
             ),
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              child:
-                  const Image(image: AssetImage('assets/images/Parking.jpg')),
-            ),
-            Text(
-              'Handling Parking shartage issues',
-              style:
-                  GoogleFonts.kanit(textStyle: const TextStyle(fontSize: 20)),
-            ),
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: const Image(
                   image: AssetImage('assets/images/Electrician.jpg')),
             ),

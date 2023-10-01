@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:sudhaar/authentication/auth_screens/loginpage.dart';
 import 'package:sudhaar/firebase_options.dart';
 import 'package:sudhaar/screens/main_screens/welcome.dart';
@@ -11,9 +12,12 @@ import 'screens/main_screens/homepage.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  FlutterNativeSplash.removeAfter(initialization);
   runApp(const MyApp());
 }
-
+ Future initialization(BuildContext? context) async{
+  await Future.delayed(Duration(seconds: 3));
+ }
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 

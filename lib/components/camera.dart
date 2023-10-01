@@ -60,10 +60,10 @@ class _CameraState extends State<Camera> {
                 child: controller == null
                     ? Center(child: Text("Loading Camera..."))
                     : !controller!.value.isInitialized
-                        ? Center(
-                            child: CircularProgressIndicator(),
-                          )
-                        : CameraPreview(controller!)),
+                    ? Center(
+                  child: CircularProgressIndicator(),
+                )
+                    : CameraPreview(controller!)),
           ),
           ElevatedButton.icon(
             style: ButtonStyle(
@@ -98,9 +98,9 @@ class _CameraState extends State<Camera> {
             child: image == null
                 ? Text("No image captured")
                 : Image.file(
-                    File(image!.path),
-                    height: 300,
-                  ),
+              File(image!.path),
+              height: 300,
+            ),
             //display captured image
           )
         ]),
